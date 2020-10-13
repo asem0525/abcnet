@@ -1,86 +1,264 @@
-function Translit(source){
-	var CyrAlph = "йцукенгзхфывапролджэсмтбіқһъьЙЦУКЕНГЗХФЫВАПРОЛДЖЭСМТБІҚҺЪЬ";
-	var LatAlph = "ysukengzhfyvaproldjesmtbiqhiiYSUKENGZHFYVAPROLDJESMTBIQHII";
-	var QazAlph = "әңғүұөшщячюиёӘҢҒҮҰӨШЩЯЧЮИЁ";
-	var QazLat =["á", "ng", "gh", "ý", "ú", "ó", "sh", "sh", "ya", "ch", "yu", "iy", "yo",
-	                            "Á", "Ng", "Gh", "Ý", "Ú", "Ó", "Sh", "Sh", "Ya", "Ch", "Yu", "Iy", "Yo"];
-								
-	var DauystyJuan = "аиоуүыэюяч";
-    var  DauystyJing = "әеөүұі";
-    var  Dauyssyz = "йцкнгзхфвпрлджсмтбшщчъь";
-	var  JJbelgiler="ьъЬЪ";
-	var Dauysty="еяёю";
-	var YYY="үҮыЫ";
-	var newSource="";
-	
-	for (i=0; i<source.length; i++){
+// /*Translit function gets the source as an input from the textarea, it should be passed as UTF-8 by calling onClick="Translit(document.getElementById('input1').value)", 
+//the outpust is passed from the function as a newSource, before returning it it writes it into output textarea by document.getElementById('output').value=newSource;*/
+function Translit(source)
+{
+	var output = document.getElementById('output'); // аударылған тексті қайда шығарады
 
-		if (source[i]=="и" || source[i]=="И"){		// И әрпі ережелеріне сәйкестендіру
-					prevIY = source[i - 1].toLowerCase();
-                    nextIY1 = source[i + 1].toLowerCase();
-                    nextIY2 = source[i + 2].toLowerCase();
+	var CyrAlph = "йцукенгзхфывапролджэсмтбіқһъьЙЦУКЕНГЗХФЫВАПРОЛДЖЭСМТБІҚҺЪЬ"; // the default Kazakh Cyrillic alphabet
+	var LatAlph = "ysukengzhfyvaproldjesmtbiqhiiYSUKENGZHFYVAPROLDJESMTBIQHII"; // letter by letter transliteration
+	var QazAlph = "әғүұөшщячюиёӘҒҮҰӨШЩЯЧЮИЁ"; // irregular letters in Cyrillic
+	var QazLat = ["á", "gh", "ý", "ú", "ó", "sh", "sh", "ya", "ch", "yu", "iy", "yo",
+		"Á", "Gh", "Ý", "Ú", "Ó", "Sh", "Sh", "Ya", "Ch", "Yu", "Iy", "Yo"
+	]; //irregular letters in Latin
 
-                    if ((DauystyJuan.indexOf(nextIY1) != -1) ||
-                        (Dauyssyz.indexOf(nextIY1) != -1 &&
-                        (Dauyssyz.indexOf(nextIY2) != -1) || DauystyJuan.indexOf(nextIY2) != -1) || nextIY2 == " ")
-                    {
-                        if (source[i]==source[i].toUpperCase())
-						current = "I";
-						else current = "i";
-                    }
-                    else if ((DauystyJing.indexOf(nextIY1) != -1) ||
-                        (Dauyssyz.indexOf(nextIY1) != -1 && DauystyJing.indexOf(nextIY2) != -1))
-                    {
-                        if (source[i]==source[i].toUpperCase())
-						current = "IY";
-						else current = "iy";
-                    }
-                    else
-                        { if (source[i]==source[i].toUpperCase())
-						current = "IY";
-						else current = "iy"; 
-						}
-					newSource=newSource+current;
-		}
-		
-		else if (source[i]=="й" || source[i]=="Й"){		// Й әрпі ережелеріне сәйкестендіру
-					prevIY = source[i - 1].toLowerCase();
-                    if (YYY.indexOf(prevIY)!=-1){
-						if (source[i]==source[i].toUpperCase())
-							current = "I";
-							else current = "i";
-						} 
-					else { if (source[i]==source[i].toUpperCase())
-							current = "Y";
-							else current = "y"; 
-						}
-			newSource=newSource+current;
-		}
-		else if (JJbelgiler.indexOf(source[i],0)!=-1){  // егер ь немесе ъ кездессе
-			nextJ=source[i+1].toLowerCase();
-			if (Dauysty.indexOf(nextJ)!=-1){
-				if (source[i]==source[i].toUpperCase())
-						current = "I";
-						else current = "i";
+	var DauystyJuan = "йаиоуүыэюяч";// буквы после И подобны иностранным словам или исключениям
+	var DauystyJing = "әеөүұі";
+	var Dauyssyz = "йцкнгзхфвпрлджсмтбшщчъь";
+	var JJbelgiler = "ьъЬЪ";
+	var Dauysty = "еяёю";	//буквы после Ь ил Ъ
+	var YYY = "ӘәӨөҮүҰұыЫ"; //Й алдынды кездесетін дауысты әріптер
+	var AOE="АаОоЕе"; // Тек осы әріптерден басталса ғана І деп жазылатын Й
+	var newSource = "";
+
+	for (i = 0; i < source.length; i++)
+	{ //проверяем каждую букву на буквы исключения от самой часто встречающейся 
+
+		// ***И әрпі ережелеріне сәйкестендіру
+		if (source[i] == "и" || source[i] == "И")
+		{
+			nextIY1=null;
+			nextIY2=null;
+			
+			try
+			{
+				nextIY1 = source[i + 1]; //кейінгі әріпті алу
 			}
-			else current="";
-			newSource=newSource+current;
+			catch (err)
+			{
+				output.value = err;
+			}
+			try
+			{
+				nextIY2 = source[i + 2]; //кейінгі екінші әріпті алу, бұл жағдай тек шет тілінен енген сөзді анықтау үшін керек болады
+			}
+			catch (err)
+			{
+				output.value = err;
+			}
+			finally
+			{
+				if(nextIY1==null || nextIY1 == " ")
+				{
+					if (source[i] == source[i].toUpperCase())
+						current = "Y";
+					else current = "y";
+				}
+				
+				else if ((DauystyJuan.indexOf(nextIY1.toLowerCase()) != -1) ||
+				(Dauyssyz.indexOf(nextIY1) != -1 &&
+					(Dauyssyz.indexOf(nextIY2.toLowerCase()) != -1) || DauystyJuan.indexOf(nextIY2.toLowerCase()) != -1) || nextIY2 == " ") //егер дауыссыздар арасында тұрса і, типа больше похоже на иностранное слово
+			{
+				if (source[i] == source[i].toUpperCase())
+					current = "I";
+				else current = "i";
+			}
+			else if ((DauystyJing.indexOf(nextIY1) != -1) ||
+				(Dauyssyz.indexOf(nextIY1) != -1 && DauystyJing.indexOf(nextIY2.toLowerCase()) != -1)) // егер қазақ сөзіне ұқсаса
+			{
+				if (source[i] == source[i].toUpperCase())
+					current = "Iy";
+				else current = "iy";
+			}
+			else
+			{
+				if (source[i] == source[i].toUpperCase())
+					current = "Iy";
+				else current = "iy";
+			}
+			newSource = newSource + current;
+		}
+		}
+		// *** Й әрпі ережелеріне сәйкестендіру
+		else if (source[i] == "й" || source[i] == "Й")
+		{
+			try
+			{
+				prevIY = source[i - 1]; //алдыңғы әріпті алу
+			}
+			catch (err)
+			{
+				output.value = err;
+			}
+			try
+			{
+				nextIY = source[i + 1];
+			}
+			catch (err)
+			{
+				output.value = err;
+			}
+			finally{
+			if (nextIY==null || nextIY == " ")
+			{ // если Й последняя буква слова
+				if (source[i] == source[i].toUpperCase())
+					current = "Y";
+				else current = "y";
+			}
+			else if ((prevIY!=null)&&(AOE.indexOf(prevIY) != -1))
+			{
+				try
+				{
+					prevAOE=source[i-2];
+				}
+				catch(err)
+				{
+					output.value=err;
+				}
+				finally
+				{
+					if (prevAOE==null || prevAOE==" ")
+					{
+						if (source[i] == source[i].toUpperCase())
+							current = "I";
+						else current = "i";
+					}
+					else{
+						if (source[i] == source[i].toUpperCase())
+							current = "Y";
+						else current = "y";
+					}
+				}
+				
+			}
+			else if ((prevIY!=null)&&(YYY.indexOf(prevIY) != -1))
+			{ // если одно из гласных после которой должна писаться как і
+				if (source[i] == source[i].toUpperCase())
+					current = "I";
+				else current = "i";
+			}
+			else
+			{
+				if (source[i] == source[i].toUpperCase())
+					current = "Y";
+				else current = "y";
+			}
+			newSource = newSource + current;
+		}
 		}
 		
-		else if (CyrAlph.indexOf(source[i],0)!=-1){			// бірлікті әріптерді алмастыру
-			var j=CyrAlph.indexOf(source[i]);
-			newSource=newSource+LatAlph[j];
+		// *** егер ь немесе ъ кездессе
+		else if (JJbelgiler.indexOf(source[i], 0) != -1)
+		{
+			try
+			{
+			nextJ = source[i + 1];
+			}
+			catch (err)
+			{
+				output.value = err;
+			}
+			finally 
+			{
+			if ((nextJ!=null)&&(Dauysty.indexOf(nextJ.toLowerCase()) != -1)) //русские имена, например Татьяна
+			{
+				if (source[i] == source[i].toUpperCase())
+					current = "I";
+				else current = "i";
+			}
+			else current = "";
+			newSource = newSource + current;
+			}
+		}
+
+		// *** Ң әрпі ережелері
+		else if (source[i] == "ң" || source[i] == "Ң")
+		{
+			try
+			{
+				nextNG = source[i + 1];
+			}
+			catch
+			{
+				output.value = err;
+			}
+			finally
+			{
+			if (nextNG==null || nextNG == " ")
+			{ // если Ң последняя буква слова
+				if (source[i] == source[i].toUpperCase())
+					current = "NG";
+				else current = "ng";
+			}
+			else if ((CyrAlph.indexOf(nextNG)) == -1 || (QazAlph.indexOf(nextNG) == -1))
+			{
+				if (source[i] == source[i].toUpperCase())
+					current = "N";
+				else current = "n";
+			}
+			else
+			{
+				if (source[i] == source[i].toUpperCase())
+					current = "NG";
+				else current = "ng";
+			}
+			newSource = newSource + current;
+			}
+		}
+
+		// *** Ю әрпін тексеру
+		else if (source[i] == "ю" || source[i] == "Ю")
+		{
+			try
+			{
+				prevYU = source[i - 1];
+
+			}
+			catch (err)
+			{
+				output.value = err;
+			}
+			finally
+			{
+				if (prevYU != null)
+				{
+					if (Dauyssyz.indexOf(prevYU.toLowerCase()) != -1)
+					{ // если перед Ю согласная, скорее всего это иностранное слово, тогда пишем U
+						if (source[i] == source[i].toUpperCase())
+							current = "U";
+						else current = "u";
+					}
+				}
+				else
+				{ // by default translit ti YU
+					if (source[i] == source[i].toUpperCase())
+						current = "Yu";
+					else current = "yu";
+
+				}
+				newSource = newSource + current;
+			}
+		}
+
+		// *** Қалған әріптерді алмастыру
+		else if (CyrAlph.indexOf(source[i], 0) != -1)
+		{ //бірлікті (буква в букву) әріптерді алмастыру
+			var j = CyrAlph.indexOf(source[i]);
+			newSource = newSource + LatAlph[j];
 
 		}
-		else if (QazAlph.indexOf(source[i])!=-1){			// екілікті әріптерді алмастыру
-			j=QazAlph.indexOf(source[i]);
+		else if (QazAlph.indexOf(source[i]) != -1)
+		{ // екілікті (буквосочетания и окутные) әріптерді алмастыру
+			j = QazAlph.indexOf(source[i]);
 
-			newSource=newSource+QazLat[j];
+			newSource = newSource + QazLat[j];
 
 		}
-		else newSource=newSource+source[i];					// егер әріп кириллдік болмаса
+
+		// *** егер әріп кириллдік болмаса
+		else newSource = newSource + source[i]; //оставить как есть
 	}
-	document.getElementById('output').value=newSource;
+	output.value = newSource;
 	return newSource;
-	
+
+
 }
