@@ -1,6 +1,6 @@
 //ABCnet Translit
 //All rights reserved by Assem Aimaganova a.aimaganova@gmail.com
-//Version 6.2
+//Version 6.3
 //Last edited 14/10/2020
 
 
@@ -11,6 +11,7 @@ function Translit(source)
 {
 	var output = document.getElementById('output'); // аударылған тексті қайда шығарады
 
+	var Alphabet="аәбвгғдеёжзийкқлмнңоөпрстуүұфхһцчшщъыіьэюя";
 	var CyrAlph = "йцукенгзхфывапролджэсмтбіқһъьЙЦУКЕНГЗХФЫВАПРОЛДЖЭСМТБІҚҺЪЬ"; // the default Kazakh Cyrillic alphabet
 	var LatAlph = "ysukengzhfyvaproldjesmtbiqhiiYSUKENGZHFYVAPROLDJESMTBIQHII"; // letter by letter transliteration
 	var QazAlph = "әғүұөшщячюиёӘҒҮҰӨШЩЯЧЮИЁ"; // irregular letters in Cyrillic
@@ -70,7 +71,7 @@ function Translit(source)
 			}
 			finally
 			{
-				if(nextIY1==null || nextIY1 == " ") //если и последняя буква слова
+				if(nextIY1==null || (Alphabet.indexOf(nextIY1.toLowerCase()) == -1))//если и последняя буква слова
 				{
 					if (source[i] == source[i].toUpperCase())
 						current = "Y";
@@ -134,7 +135,7 @@ function Translit(source)
 				output.value = err;
 			}
 			finally{
-			if (nextIY==null || nextIY == " ")
+			if (nextIY==null || (Alphabet.indexOf(nextIY.toLowerCase()) == -1))
 			{ // если Й последняя буква слова
 				if (source[i] == source[i].toUpperCase())
 					current = "Y";
@@ -152,7 +153,7 @@ function Translit(source)
 				}
 				finally
 				{
-					if (prevAOE==null || prevAOE==" ")
+					if (prevAOE==null || (Alphabet.indexOf(prevAOE.toLowerCase()) == -1))
 					{
 						if (source[i] == source[i].toUpperCase())
 							current = "I";
@@ -219,7 +220,7 @@ function Translit(source)
 			}
 			finally
 			{
-			if (nextNG==null || nextNG == " ")
+			if (nextNG==null || (Alphabet.indexOf(nextNG.toLowerCase()) == -1))
 			{ // если Ң последняя буква слова
 				if (source[i] == source[i].toUpperCase())
 					current = "NG";
