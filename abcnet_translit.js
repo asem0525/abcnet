@@ -1,9 +1,11 @@
 //ABCnet Translit
 //All rights reserved by Assem Aimaganova a.aimaganova@gmail.com
-//Version 6.1
+//Version 6.2
 //Last edited 14/10/2020
 
-//Translit function gets the source as an input from the textarea, it should be passed as UTF-8 by calling onClick="Translit(document.getElementById('input1').value)", 
+
+
+// /*Translit function gets the source as an input from the textarea, it should be passed as UTF-8 by calling onClick="Translit(document.getElementById('input1').value)", 
 //the outpust is passed from the function as a newSource, before returning it it writes it into output textarea by document.getElementById('output').value=newSource;*/
 function Translit(source)
 {
@@ -24,7 +26,8 @@ function Translit(source)
 	var YYY = "ӘәӨөҮүҰұыЫ"; //Й алдынды кездесетін дауысты әріптер
 	var AOE="АаОоЕе"; // Тек осы әріптерден басталса ғана І деп жазылатын Й
 	var newSource = "";
-	var TekQZ="ңғқһ";
+	var TekQZ="ңғқһ"; //исключительно каз буквы
+	var TekRus="вйцуфч";//исключительно рус буквы
 
 	for (i = 0; i < source.length; i++)
 	{ //проверяем каждую букву на буквы исключения от самой часто встречающейся 
@@ -73,11 +76,17 @@ function Translit(source)
 						current = "Y";
 					else current = "y";
 				}
-				else if((prevIY1!=null && (TekQZ.indexOf(prevIY1.toLowerCase())!=-1)) ||(nextIY1!=null && (TekQZ.indexOf(nextIY1.toLowerCase())!=-1))) //если вокруг и казахская буква
+				else if((prevIY1!=null && (TekQZ.indexOf(prevIY1.toLowerCase())!=-1)) ||(nextIY1!=null && (TekQZ.indexOf(nextIY1.toLowerCase())!=-1))) //если вокруг 'и' казахская буква
 				{
 					if (source[i] == source[i].toUpperCase())
 					current = "Iy";
 					else current = "iy";
+				}
+				else if((prevIY1!=null && (TekRus.indexOf(prevIY1.toLowerCase())!=-1)) ||(nextIY1!=null && (TekRus.indexOf(nextIY1.toLowerCase())!=-1))) //если вокруг 'и' русская буква
+				{
+					if (source[i] == source[i].toUpperCase())
+					current = "I";
+					else current = "i";
 				}
 				else if((nextIY1!=null && 
 					     nextIY1.toLowerCase()!="т" && 
