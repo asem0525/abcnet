@@ -1,4 +1,9 @@
-// /*Translit function gets the source as an input from the textarea, it should be passed as UTF-8 by calling onClick="Translit(document.getElementById('input1').value)", 
+//ABCnet Translit
+//All rights reserved by Assem Aimaganova a.aimaganova@gmail.com
+//Version 6.1
+//Last edited 14/10/2020
+
+//Translit function gets the source as an input from the textarea, it should be passed as UTF-8 by calling onClick="Translit(document.getElementById('input1').value)", 
 //the outpust is passed from the function as a newSource, before returning it it writes it into output textarea by document.getElementById('output').value=newSource;*/
 function Translit(source)
 {
