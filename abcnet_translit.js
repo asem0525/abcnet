@@ -1,7 +1,7 @@
 //ABCnet Translit
 //All rights reserved by Assem Aimaganova a.aimaganova@gmail.com
-//Version 6.3
-//Last edited 14/10/2020
+//Version 6.4
+//Last edited 15/10/2020
 
 
 
@@ -84,6 +84,12 @@ function Translit(source)
 					else current = "iy";
 				}
 				else if((prevIY1!=null && (TekRus.indexOf(prevIY1.toLowerCase())!=-1)) ||(nextIY1!=null && (TekRus.indexOf(nextIY1.toLowerCase())!=-1))) //если вокруг 'и' русская буква
+				{
+					if (source[i] == source[i].toUpperCase())
+					current = "I";
+					else current = "i";
+				}
+				else if((prevIY1!=null && prevIY1.toLowerCase()=="м") && (nextIY1!=null && nextIY1.toLowerCase()=="к")) //если вокруг 'и' м и к буквы
 				{
 					if (source[i] == source[i].toUpperCase())
 					current = "I";
