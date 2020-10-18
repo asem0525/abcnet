@@ -1,12 +1,12 @@
 //ABCnet Translit
 //All rights reserved by Assem Aimaganova a.aimaganova@gmail.com
-//Version 6.4
-//Last edited 15/10/2020
+//Version 6.7
+//Last edited 17/10/2020
 
 
 
 // /*Translit function gets the source as an input from the textarea, it should be passed as UTF-8 by calling onClick="Translit(document.getElementById('input1').value)", 
-//the outpust is passed from the function as a newSource, before returning it it writes it into output textarea by document.getElementById('output').value=newSource;*/
+//the output is passed from the function as a newSource, before returning it, it writes it into output textarea by document.getElementById('output').value=newSource;*/
 function Translit(source)
 {
 	var output = document.getElementById('output'); // аударылған тексті қайда шығарады
@@ -43,7 +43,7 @@ function Translit(source)
 			}
 			catch (err)
 			{
-				output.value = err;
+				
 			}
 			try
 			{
@@ -51,7 +51,7 @@ function Translit(source)
 			}
 			catch (err)
 			{
-				output.value = err;
+				
 			}
 			try
 			{
@@ -59,7 +59,7 @@ function Translit(source)
 			}
 			catch (err)
 			{
-				output.value = err;
+				
 			}
 			try
 			{
@@ -67,15 +67,15 @@ function Translit(source)
 			}
 			catch (err)
 			{
-				output.value = err;
+				
 			}
 			finally
 			{
 				if(nextIY1==null || (Alphabet.indexOf(nextIY1.toLowerCase()) == -1))//если и последняя буква слова
 				{
 					if (source[i] == source[i].toUpperCase())
-						current = "Y";
-					else current = "y";
+						current = "IY";
+					else current = "iy";
 				}
 				else if((prevIY1!=null && (TekQZ.indexOf(prevIY1.toLowerCase())!=-1)) ||(nextIY1!=null && (TekQZ.indexOf(nextIY1.toLowerCase())!=-1))) //если вокруг 'и' казахская буква
 				{
@@ -89,7 +89,13 @@ function Translit(source)
 					current = "I";
 					else current = "i";
 				}
-				else if((prevIY1!=null && prevIY1.toLowerCase()=="м") && (nextIY1!=null && nextIY1.toLowerCase()=="к")) //если вокруг 'и' м и к буквы
+				else if((prevIY1!=null && (prevIY1.toLowerCase()=="м"|| prevIY1.toLowerCase()=="н" || prevIY1.toLowerCase()=="л" || prevIY1.toLowerCase()=="т")) && (nextIY1!=null && (nextIY1.toLowerCase()=="к" || nextIY1.toLowerCase()=="н"))) //если вокруг 'и' м,н,л и к,н буквы, то это иностранное слово
+				{
+					if (source[i] == source[i].toUpperCase())
+					current = "I";
+					else current = "i";
+				}
+				else if((prevIY1!=null && prevIY1.toLowerCase()=="з") && (nextIY1!=null && nextIY1.toLowerCase()=="д")) //если вокруг 'и' з и д буквы, как в "президент"
 				{
 					if (source[i] == source[i].toUpperCase())
 					current = "I";
@@ -99,7 +105,7 @@ function Translit(source)
 					     nextIY1.toLowerCase()!="т" && 
 						(Dauyssyz.indexOf(nextIY1.toLowerCase())!=-1)) &&
 						(nextIY2!=null && 
-						(Dauyssyz.indexOf(nextIY2.toLowerCase())!=-1))) //если после и стоят две согласной, кроме слова "ит", это скорее всего иностранное слово
+						(Dauyssyz.indexOf(nextIY2.toLowerCase())!=-1))) //если после "и" стоят две согласной, кроме слова "ит", это скорее всего иностранное слово
 				{
 					if (source[i] == source[i].toUpperCase())
 					current = "I";
@@ -130,7 +136,7 @@ function Translit(source)
 			}
 			catch (err)
 			{
-				output.value = err;
+				
 			}
 			try
 			{
@@ -138,7 +144,7 @@ function Translit(source)
 			}
 			catch (err)
 			{
-				output.value = err;
+				
 			}
 			finally{
 			if (nextIY==null || (Alphabet.indexOf(nextIY.toLowerCase()) == -1))
@@ -155,7 +161,7 @@ function Translit(source)
 				}
 				catch(err)
 				{
-					output.value=err;
+					
 				}
 				finally
 				{
@@ -198,7 +204,7 @@ function Translit(source)
 			}
 			catch (err)
 			{
-				output.value = err;
+				
 			}
 			finally 
 			{
@@ -222,7 +228,7 @@ function Translit(source)
 			}
 			catch
 			{
-				output.value = err;
+				
 			}
 			finally
 			{
@@ -258,7 +264,7 @@ function Translit(source)
 			}
 			catch (err)
 			{
-				output.value = err;
+				
 			}
 			finally
 			{
@@ -281,7 +287,102 @@ function Translit(source)
 				newSource = newSource + current;
 			}
 		}
+		else if (source[i] == "ц" || source[i] == "Ц")//правила буквы Ц
+		{
+			try
+			{
+				nextIY1 = source[i + 1]; //кейінгі әріпті алу
+			}
+			catch (err)
+			{
+				
+			}
+			try
+			{
+				nextIY2 = source[i + 2]; //кейінгі екінші әріпті алу, бұл жағдай тек шет тілінен енген сөзді анықтау үшін керек болады
+			}
+			catch (err)
+			{
+				
+			}
+			finally
+			{
+				if ((nextIY1!=null && nextIY1.toLowerCase()=="и") && 
+						(nextIY2!=null && nextIY2.toLowerCase()=="я")) //если после "ц" стоят "и" и "я", иностранный слова заканчивающиеся на -ция
+				{
+					if (source[i] == source[i].toUpperCase())
+					current = "S";
+					else current = "s";
+				}
+				else
+				{ // by default translit to C
+					if (source[i] == source[i].toUpperCase())
+						current = "C";
+					else current = "c";
 
+				}
+				newSource = newSource + current;
+			}
+		}
+		else if (source[i] == "з" || source[i] == "З")//правила буквы З
+		{
+			try
+			{
+				prevZ = source[i - 1]; //алдынғы әріпті алу
+			}
+			catch (err)
+			{
+				
+			}
+			try
+			{
+				nextIY1 = source[i + 1]; //кейінгі әріпті алу
+			}
+			catch (err)
+			{
+				
+			}
+			try
+			{
+				nextIY2 = source[i + 2]; //кейінгі екінші әріпті алу, бұл жағдай тек шет тілінен енген сөзді анықтау үшін керек болады
+			}
+			catch (err)
+			{
+				
+			}
+			finally
+			{
+				if(prevZ!=null && (Alphabet.indexOf(prevZ.toLowerCase) != -1)) //если з не первая буква
+				{
+					if ((nextIY1!=null && nextIY1.toLowerCase()=="и") &&
+					(nextIY2!=null &&
+							(nextIY2.toLowerCase()=="я" || nextIY2.toLowerCase()=="д"))) // Азия, президент
+					{
+						if (source[i] == source[i].toUpperCase())
+						current = "S";
+						else current = "s";
+					}
+				
+					else
+					{ // by default translit to Z
+						if (source[i] == source[i].toUpperCase())
+							current = "Z";
+						else current = "z";
+
+					}
+				}
+				else
+					{ // by default translit to Z
+						if (source[i] == source[i].toUpperCase())
+							current = "Z";
+						else current = "z";
+
+					}
+			
+				newSource = newSource + current;
+			}
+		}
+		
 		// *** Қалған әріптерді алмастыру
 		else if (CyrAlph.indexOf(source[i], 0) != -1)
 		{ //бірлікті (буква в букву) әріптерді алмастыру
