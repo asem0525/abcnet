@@ -1,6 +1,6 @@
 //ABCnet Translit
 //All rights reserved by Assem Aimaganova a.aimaganova@gmail.com
-//Version 6.9
+//Version 6.10
 //Last edited 18/10/2020
 
 
@@ -28,7 +28,8 @@ function Translit(source)
 	var AOE="АаОоЕе"; // Тек осы әріптерден басталса ғана І деп жазылатын Й
 	var newSource = "";
 	var TekQZ="ңғқһ"; //исключительно каз буквы
-	var TekRus="вйцуфч";//исключительно рус буквы
+	var TekRus="йцуфч";//исключительно рус буквы
+	
 
 	for (i = 0; i < source.length; i++)
 	{ //проверяем каждую букву на буквы исключения от самой часто встречающейся 
@@ -89,7 +90,13 @@ function Translit(source)
 					current = "I";
 					else current = "i";
 				}
-				else if((prevIY1!=null && (prevIY1.toLowerCase()=="м"|| prevIY1.toLowerCase()=="н" || prevIY1.toLowerCase()=="л" || prevIY1.toLowerCase()=="т")) && (nextIY1!=null && (nextIY1.toLowerCase()=="к" || nextIY1.toLowerCase()=="н"))) //если вокруг 'и' м,н,л и к,н буквы, то это иностранное слово
+				else if((prevIY1!=null && (TekRus.indexOf(prevIY1.toLowerCase())!=-1)) ||(nextIY1!=null && (TekRus.indexOf(nextIY1.toLowerCase())!=-1))) //если вокруг 'и' русская буква
+				{
+					if (source[i] == source[i].toUpperCase())
+					current = "I";
+					else current = "i";
+				}
+				else if((prevIY1!=null && (prevIY1.toLowerCase()=="м"|| prevIY1.toLowerCase()=="н" || prevIY1.toLowerCase()=="л" || prevIY1.toLowerCase()=="т" || prevIY1.toLowerCase()=="д")) && (nextIY1!=null && (nextIY1.toLowerCase()=="к" || nextIY1.toLowerCase()=="н"))) //если вокруг 'и' м,н,л и к,н буквы, то это иностранное слово
 				{
 					if (source[i] == source[i].toUpperCase())
 					current = "I";
@@ -153,6 +160,12 @@ function Translit(source)
 					current = "Y";
 				else current = "y";
 			}
+			else if (nextIY!=null && nextIY.toLowerCase() == "ы")
+			{ // если после Й буква Ы
+				if (source[i] == source[i].toUpperCase())
+					current = "I";
+				else current = "i";
+			}
 			else if ((prevIY!=null)&&(AOE.indexOf(prevIY) != -1))
 			{
 				try
@@ -185,6 +198,7 @@ function Translit(source)
 					current = "I";
 				else current = "i";
 			}
+			
 			else
 			{
 				if (source[i] == source[i].toUpperCase())
