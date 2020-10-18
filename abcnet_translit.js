@@ -1,7 +1,7 @@
 //ABCnet Translit
 //All rights reserved by Assem Aimaganova a.aimaganova@gmail.com
-//Version 6.7
-//Last edited 17/10/2020
+//Version 6.8
+//Last edited 18/10/2020
 
 
 
@@ -352,7 +352,7 @@ function Translit(source)
 			}
 			finally
 			{
-				if(prevZ!=null && (Alphabet.indexOf(prevZ.toLowerCase) != -1)) //если з не первая буква
+				if(prevZ!=null && (prevZ.toLowerCase()=="а" || prevZ.toLowerCase()=="е" || prevZ.toLowerCase()=="й" )) //если з не первая буква
 				{
 					if ((nextIY1!=null && nextIY1.toLowerCase()=="и") &&
 					(nextIY2!=null &&
@@ -382,7 +382,6 @@ function Translit(source)
 				newSource = newSource + current;
 			}
 		}
-		
 		// *** Қалған әріптерді алмастыру
 		else if (CyrAlph.indexOf(source[i], 0) != -1)
 		{ //бірлікті (буква в букву) әріптерді алмастыру
