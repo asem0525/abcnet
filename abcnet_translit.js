@@ -1,6 +1,6 @@
 //ABCnet Translit
 //All rights reserved by Assem Aimaganova a.aimaganova@gmail.com
-//Version 6.8
+//Version 6.9
 //Last edited 18/10/2020
 
 
@@ -382,6 +382,64 @@ function Translit(source)
 				newSource = newSource + current;
 			}
 		}
+		else if (source[i] == "я" || source[i] == "Я")//исключения буквы Я
+		{
+			try
+			{
+				prevYa1 = source[i - 1]; //алдынғы әріпті алу
+			}
+			catch (err)
+			{
+				
+			}
+			try
+			{
+				prevYa2 = source[i - 2]; //алдынғы алдынғы әріпті алу
+			}
+			catch (err)
+			{
+				
+			}
+			try
+			{
+				prevYa3 = source[i - 3]; //алдынғы алдынғы алдынғы
+			}
+			catch (err)
+			{
+				
+			}
+			finally
+			{
+				if(prevYa3!=null) //проверяем на слово Азия
+				{
+					if ((prevYa1!=null && prevYa1.toLowerCase()=="и") &&
+						(prevYa2!=null && prevYa2.toLowerCase()=="з")) // Азия, Малайзия...
+					{
+						if (source[i] == source[i].toUpperCase())
+						current = "A";
+						else current = "a";
+					}
+				
+					else
+					{ // by default translit to Ya
+						if (source[i] == source[i].toUpperCase())
+							current = "YA";
+						else current = "ya";
+
+					}
+				}
+				else
+					{ // by default translit to Ya
+						if (source[i] == source[i].toUpperCase())
+							current = "Ya";
+						else current = "ya";
+
+					}
+			
+				newSource = newSource + current;
+			}
+		}
+		
 		// *** Қалған әріптерді алмастыру
 		else if (CyrAlph.indexOf(source[i], 0) != -1)
 		{ //бірлікті (буква в букву) әріптерді алмастыру
